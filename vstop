@@ -1,0 +1,51 @@
+#!/bin/bash
+###################################################
+##
+## Script to stop, destroy or reboot all active VMs
+##
+###################################################
+
+
+# Checking privileges
+if [ $UID != 0 ]; then
+	sudo $0 $@;
+	exit 0;
+fi
+
+# Default action for the command
+DEFAULT_ACTION="shutdown";
+
+action=$default_action;
+# Arguments parsing
+for arg in "$@"; do
+	if [ $arg == $DEFAULT_ACTION ]; then
+		action=$default_action;
+	elif [ $arg == "destroy" ]; then
+		action="destroy";
+	elif [ $arg == "reboot" ]; then
+		action="reboot";
+	else
+		printf "Usage: $0 {shutdown|destroy|reboot}\n";
+		printf "\t- If no argument is passed $DEFAULT_ACTION will be used\n";
+		printf "\t- Any other argument shows this help\n";
+		exit 0;
+	fi
+done
+
+
+# List of running VMs
+domain_list=$(virsh list | awk '/^ [0-9]/{print $2}');
+
+# In case no VM is running
+count=$(wc -l <<< $domain_list);
+if [ $count == 0 ]; then
+	printf "No virtual machines avaiable";
+	exit 0;
+fi
+
+# Execute command for each running VM
+for vm in $domain_list; do
+	echo $(virsh $action $vm);
+done
+
+exit 0

@@ -15,7 +15,7 @@ fi
 # Default action for the command
 DEFAULT_ACTION="shutdown";
 
-action=$default_action;
+action=$DEFAULT_ACTION;
 # Arguments parsing
 for arg in "$@"; do
 	if [ $arg == $DEFAULT_ACTION ]; then

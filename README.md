@@ -4,11 +4,17 @@ A couple of utilities to simplify basic operations with `virsh` on multiple doma
 ## Vstart
 
 ### Usage
-This script can work in two ways:
+This script can work in three ways:
 * With no arguments will list all domains managed by `virsh` and their status.
 ```sh
 vstart
 ```
+* Passing the arguments `-a` or `--all` will start all available domains
+```sh
+vstart -a
+vstart --all
+```
+
 * With a list of the domains to start.
 ```sh
 vstart domain1 domain2 domain3 ...

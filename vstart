@@ -25,10 +25,20 @@ if [ $# == 0 ]; then
 fi
 
 # If there's arguments
+start_vms="";
 ACTION="virsh start";
 output="";
 
-for vm in "$@"; do
+if [ $1 == "--all" ] || [ $1 == "-a" ]; then
+	cmd=`virsh list --name --all`;
+	for vm in $cmd; do
+		start_vms=$start_vms" "$vm;
+	done
+else
+	start_vms=$@;
+fi
+
+for vm in $start_vms; do
 	output=$($ACTION $vm 2>&1);
 	if [[ "$output" == "error"* ]]; then
 		if [[ "$output" == *"already active"* ]]; then

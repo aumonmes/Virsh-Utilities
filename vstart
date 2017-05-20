@@ -7,9 +7,34 @@
 
 
 # Define colors for output messages
-ERROR="$(tput setaf 1)[\u2718]$(tput sgr0)";
-GOOD="$(tput setaf 2)[\u2713]$(tput sgr0)";
-WARN="$(tput setaf 3)[!]$(tput sgr0)";
+ERROR="1";
+GOOD="2";
+WARN="3";
+
+function generate_icon(){
+	echo "$(tput setaf $1)[ $2 ]$(tput sgr0)";
+}
+
+function get_icon(){
+	case "$1" in
+		"running") echo $(generate_icon $GOOD "\u23f5") # ⏵
+			;;
+		"paused") echo $(generate_icon $WARN "\u23f8") # ⏸
+			;;
+		"shut off") echo $(generate_icon $ERROR "\u23f9") # ⏹
+			;;
+		"crashed") echo $(generate_icon $ERROR "\u203b") # ※
+			;;
+		"in shutdown") echo $(generate_icon $WARN "\u2757") # ❗
+			;;
+		"idle") echo $(generate_icon $WARN "\u2053") # ⁓
+			;;
+		"dying") echo $(generate_icon $ERROR "\u2620") # ☠
+			;;
+		*) echo $(generate_icon $WARN "?")
+			;;
+	esac
+}
 
 
 # Checking privileges
@@ -20,7 +45,14 @@ fi
 
 # If no arguments just list
 if [ $# == 0 ]; then
-	virsh list --all;
+	cmd=$(virsh list --name --all);
+	output="";
+	for vm in $cmd; do
+		vm_status=$(virsh domstate "$vm");
+		icon=$(get_icon "$vm_status");
+		output="$output$icon\t$vm\n";
+	done
+	printf "$output";
 	exit 0
 fi
 
@@ -42,14 +74,14 @@ for vm in $start_vms; do
 	output=$($ACTION $vm 2>&1);
 	if [[ "$output" == "error"* ]]; then
 		if [[ "$output" == *"already active"* ]]; then
-			printf "$WARN $vm alredy active\n";
+			printf "$(get_icon "in shutdown")\t$vm\tAlredy active\n";
 		elif [[ "$output" == *"failed to get domain"* ]]; then
-			printf "$ERROR $vm not found\n";
+			printf "$(get_icon "in shutdown")\t$vm\tNot found\n";
 		else
-			printf "$ERROR $vm had an unexpected error: $output\n";
+			printf "$(get_icon "dying")\t$vm\t$output\n";
 		fi
 	else
-		printf "$GOOD $vm started\n";
+		printf "$(get_icon "running")\t$vm\tStarted\n";
 	fi
 done
 

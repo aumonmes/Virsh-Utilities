@@ -6,10 +6,16 @@ A couple of utilities to simplify basic operations with `virsh` on multiple doma
 ### Usage
 This script can work in three ways:
 * With no arguments will list all domains managed by `virsh` and their status.
-```sh
-vstart
-```
-* Passing the arguments `-a` or `--all` will start all available domains
+  * **[ ⏵ ]**: Running
+  * **[ ⏸ ]**: Paused
+  * **[ ⏹ ]**: Shut off
+  * **[ ※ ]**: Crashed
+  * **[ ❗ ]**: In shutdown
+  * **[ ⁓ ]**: Idle
+  * **[ ☠ ]**: Dying
+  * **[ ? ]**: Unknown
+
+* Passing the arguments `-a` or `--all` will start all available domains.
 ```sh
 vstart -a
 vstart --all

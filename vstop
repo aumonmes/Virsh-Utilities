@@ -32,14 +32,13 @@ for arg in "$@"; do
 	fi
 done
 
-
 # List of running VMs
-domain_list=$(virsh list | awk '/^ [0-9]/{print $2}');
+domain_list=$(virsh list --name)
 
 # In case no VM is running
 count=$(wc -l <<< $domain_list);
 if [ $count == 0 ]; then
-	printf "No virtual machines avaiable";
+	printf "No started domains";
 	exit 0;
 fi
 

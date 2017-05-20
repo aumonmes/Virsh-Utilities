@@ -7,9 +7,9 @@
 
 
 # Define colors for output messages
-ERROR="$(tput setaf 1)[-]$(tput sgr0)";
-GOOD="$(tput setaf 2)[+]$(tput sgr0)";
-WARN="$(tput setaf 3)[*]$(tput sgr0)";
+ERROR="$(tput setaf 1)[\u2718]$(tput sgr0)";
+GOOD="$(tput setaf 2)[\u2713]$(tput sgr0)";
+WARN="$(tput setaf 3)[!]$(tput sgr0)";
 
 
 # Checking privileges
